@@ -3,6 +3,8 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import debounce from "../../utils/debounce";
 import MoviesList from "../MoviesList";
+import Loading from '../Loading'
+
 import "./style.css";
 
 class AddMovie extends Component {
@@ -15,6 +17,7 @@ class AddMovie extends Component {
       rating: "",
       description: "",
       showMovieList: false,
+      loading:true,
     };
     this.handleSearch = this.handleSearch.bind(this);
     this.handleDescription = this.handleDescription.bind(this);
@@ -38,7 +41,7 @@ class AddMovie extends Component {
     )
       .then((res) => res.json())
       .then((movies) =>
-        this.setState({ movies: movies.results, showMovieList: !!movies.results })
+        this.setState({ movies: movies.results, showMovieList: !!movies.results,loading:false })
       )
       .catch(() => this.setState({ movies: [] }));
   }
@@ -47,7 +50,7 @@ class AddMovie extends Component {
     const {
       target: { value },
     } = event;
-    this.setState({ name: value });
+    this.setState({ name: value,showMovieList:true });
     this.debounceFunc.current();
   }
 
@@ -99,6 +102,7 @@ class AddMovie extends Component {
       movies,
       rating,
       showMovieList,
+      loading,
     } = this.state;
     return (
       <div className="movie-form-container showContainer">
@@ -120,10 +124,15 @@ class AddMovie extends Component {
             />
             {showMovieList ? (
               <div className="add-movie-movies-list">
-                <MoviesList
-                  movies={movies}
-                  handleChooseMovie={this.handleChooseMovie}
-                />
+                {loading ? 
+                  <Loading />
+                : (
+                  <MoviesList
+                    movies={movies}
+                    handleChooseMovie={this.handleChooseMovie}
+                  />
+                
+                )}
               </div>
             ) : null}
           </div>

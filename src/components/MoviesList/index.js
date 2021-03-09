@@ -5,6 +5,7 @@ function MoviesList(props) {
   const handleChooseMovieByKey = (id, e) => {
     return handleChooseMovie(id, e);
   };
+
   return (
     <>
       <ul>

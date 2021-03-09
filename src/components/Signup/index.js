@@ -9,14 +9,12 @@ class SignUp extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			username: '',
 			email: '',
 			password: '',
 			confirmPassword: '',
 			errors: '',
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleUsername = this.handleUsername.bind(this);
 		this.handleEmail = this.handleEmail.bind(this);
 		this.handlePassword = this.handlePassword.bind(this);
 		this.handleConfirmPassword = this.handleConfirmPassword.bind(this);
@@ -30,14 +28,12 @@ class SignUp extends Component {
 		} = this.props;
 		const {
 			target: [
-				{ value: username },
 				{ value: email },
 				{ value: password },
 				{ value: confirmPassword },
 			],
 		} = event;
 		if (
-			!username.trim() &&
 			!email.trim() &&
 			!password.trim() &&
 			!confirmPassword.trim()
@@ -54,12 +50,6 @@ class SignUp extends Component {
 		return push('/movies');
 	}
 
-	handleUsername(event) {
-		const {
-			target: { value },
-		} = event;
-		this.setState({ username: value });
-	}
 
 	handleEmail(event) {
 		const {
@@ -83,21 +73,11 @@ class SignUp extends Component {
 	}
 
 	render() {
-		const { confirmPassword, email, password, username, errors } = this.state;
+		const { confirmPassword, email, password, errors } = this.state;
 		return (
   <div className='signup-form-container'>
     <h2 className='add-user-header'>Create New User</h2>
     <form onSubmit={this.handleSubmit} className='signup-form'>
-      <div className='add-movie-input-row'>
-        <label htmlFor='username'>User Name</label>
-        <input
-          type='text'
-          id='username'
-          value={username}
-          onChange={this.handleUsername}
-          placeholder='Enter Your user name...'
-        />
-      </div>
       <div className='add-movie-input-row'>
         <label htmlFor='Email'>Email</label>
         <input
