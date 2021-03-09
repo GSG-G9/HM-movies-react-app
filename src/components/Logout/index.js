@@ -1,14 +1,11 @@
-import PropTypes from 'prop-types';
+
 import { Redirect } from 'react-router-dom';
 
-function Logout(props){
-  const { handleLogout } = props;
-  handleLogout();
+import {signOut} from '../../utils/firebaseStore';
+
+function Logout(){
+  signOut()
   return <Redirect to='/' />
 }
 
-
-Logout.propTypes = {
-	handleLogout: PropTypes.func.isRequired,
-};
 export default Logout;

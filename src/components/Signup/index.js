@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { registerUser, isAuthUser } from '../../utils/localStorage';
 import './style.css';
+import firebase from '../../firebase'
+import {authContext} from "../Context"
 
 class SignUp extends Component {
 	constructor(props) {
@@ -21,7 +22,7 @@ class SignUp extends Component {
 		this.handleConfirmPassword = this.handleConfirmPassword.bind(this);
 	}
 
-	handleSubmit(event) {
+	async handleSubmit(event) {
 		event.preventDefault();
 		const {
 			history: { push },
@@ -47,21 +48,10 @@ class SignUp extends Component {
 		if (password !== confirmPassword) {
 			return this.setState({ errors: 'Your Passwords should be identical' });
 		}
-		const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
-
-		const users = [
-			{
-				username,
-				email,
-				password,
-			},
-			...savedUsers,
-		];
-
-		localStorage.setItem('users', JSON.stringify(users));
-		registerUser(username);
-		handleAuthentication();
-		return push('/login');
+		
+		await firebase.auth().createUserWithEmailAndPassword(email,password);
+		handleAuthentication(true);
+		return push('/movies');
 	}
 
 	handleUsername(event) {
@@ -162,7 +152,7 @@ SignUp.propTypes = {
 };
 
 function HighOrderSignUp(props) {
-	const isAuth = isAuthUser();
+	const { isAuth } = useContext(authContext);
 	if (!isAuth) {
 		return <SignUp {...props} />;
 	}

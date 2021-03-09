@@ -1,15 +1,21 @@
 import { BrowserRouter as Router } from "react-router-dom";
+import axios from 'axios';
 import Layout from "./components/Layout";
+import AuthProvider from './components/Context'
 import "./App.css";
+
+
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Layout />
-      </div>
+      <AuthProvider>
+        <div className='App'>
+          <Layout />
+        </div>
+      </AuthProvider>
     </Router>
-  );
+	);
 }
 
 export default App;

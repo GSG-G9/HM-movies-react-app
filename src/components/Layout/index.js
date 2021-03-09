@@ -15,10 +15,13 @@ import Contact from "../Contact";
 import MovieContainer from "../MovieContainer";
 import SideNav from "../SideNav";
 
+import firebase from "../../firebase"
+
 import Home from '../Home'
 import Login from "../Login";
 import SignUp from "../Signup";
 import Logout from '../Logout';
+import Loading from '../Loading'
 
 import "./style.css";
 
@@ -29,6 +32,7 @@ class Layout extends Component {
 			show: true,
 			movies: getMovies(),
 			isAuthenticated: false,
+			loading:true,
 		};
 		this.handleDeleteMovie = this.handleDeleteMovie.bind(this);
 		this.handleWatchedMovies = this.handleWatchedMovies.bind(this);
@@ -39,12 +43,28 @@ class Layout extends Component {
 		this.handleLogout = this.handleLogout.bind(this);
 	}
 
+
+
 	componentDidMount() {
-		this.setState({ movies: getMovies(), isAuthenticated: isAuthUser() });
+			firebase
+				.auth()
+				.onAuthStateChanged((user) =>
+					user
+						? this.setState({
+								movies: getMovies(),
+								isAuthenticated: true,
+								loading: false,
+						  })
+						: this.setState({
+								movies: getMovies(),
+								isAuthenticated: false,
+								loading: false,
+						  })
+				);
 	}
 
-	handleAuthentication() {
-		this.setState({ isAuthenticated: isAuthUser() });
+	handleAuthentication(value) {
+		this.setState({ isAuthenticated: value });
 	}
 
 	handleDeleteMovie(movieId) {
@@ -118,8 +138,10 @@ class Layout extends Component {
 	}
 
 	render() {
-		const { show, movies, isAuthenticated } = this.state;
-		return (
+		const { show, movies, isAuthenticated,loading } = this.state;
+		return loading ? (
+  <Loading />
+		) : (
   <div className='Layout'>
     <Header />
     <div className='main-content'>
@@ -131,7 +153,7 @@ class Layout extends Component {
           exact
           path='/logout'
           render={(props) => (
-            <Logout handleLogout={this.handleLogout} {...props} />
+            <Logout {...props} />
 							)}
         />
         <Route
@@ -199,13 +221,11 @@ class Layout extends Component {
   <Route exact path='/' component={Home} />
 						)}
         <Redirect to='/' />
-
       </Switch>
     </div>
     <div>{show}</div>
   </div>
-		);
-	}
+		);}
 }
 
 Layout.propTypes = {

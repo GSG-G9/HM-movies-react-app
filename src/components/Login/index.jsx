@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { Link,Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { isAuthUser, registerUser } from '../../utils/localStorage';
-
+import {isAuthUserFirebase} from '../../utils/firebaseStore'
+import firebase from '../../firebase'
 import "./style.css";
 
 class Login extends Component {
@@ -20,7 +21,7 @@ class Login extends Component {
     this.handleEmail = this.handleEmail.bind(this);
 	}
 
-	handleSubmit(event) {
+	async handleSubmit(event) {
 		event.preventDefault();
 		const {
       history: { push },
@@ -29,22 +30,18 @@ class Login extends Component {
 		const {
 			target: [{ value: email }, { value: password }],
 		} = event;
-		const savedUsers = JSON.parse(localStorage.getItem('users'));
+			
+	
+		await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+		await firebase.auth().signInWithEmailAndPassword(email,password)
 
-		if (savedUsers === null){
-			return this.setState({errors:'Please register Your email and Password ...  '})
-		}
-
-		const isAuth = savedUsers.find(
-			(user) => user.email === email && user.password === password
-		);
-
-		if (isAuth) {
+		firebase.auth().onAuthStateChanged((user) => {
+			if (user){
 			this.setState({ errors: '' });
-      registerUser(isAuth.username);
-      handleAuthentication();
+      handleAuthentication(true);
 			return push('/movies');
-		}
+			}
+		})
 
 		return this.setState({ errors: 'Please check you Email and Password ... ' });
 	}

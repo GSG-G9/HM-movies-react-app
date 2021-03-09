@@ -1,46 +1,31 @@
-import React, { Component } from "react";
+import React, { useContext, useState } from "react";
 import {Link} from 'react-router-dom'
 import LinkItem from "../LinkItem/index";
 import Backdrop from "../Backdrop/index";
-import {isAuthUser,getUserName} from '../../utils/localStorage'
 import "./style.css";
+import {authContext} from '../Context'
 
-class Headers extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			open: false,
-		};
-		this.handleClick = this.handleClick.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleShowHide = this.handleClick.bind(this)
+function Headers() {
+  
+  const [state,setState] = useState(false)
+  const {isAuth:isAuthenticated} = useContext(authContext)
+  
+	const handleClick = () => {
+    return setState((open)=> !open)
 	}
 
-	handleClick() {
-		this.setState((prevState) => {
-			return { open: !prevState.open };
-		});
+	const handleKeyDown = () =>  {
+    return setState((open)=> !open)
 	}
 
-	handleKeyDown() {
-		this.setState((prevState) => {
-			return { open: !prevState.open };
-		});
-	}
-
-	handleShowHide(){
-    		this.setState((prevState) => {
-					return { open: !prevState.open };
-				});
+	const handleShowHide = () => {
+    	return setState((open)=> !open)
   }
 
-	render() {
-		const { open } = this.state;
-		const isAuthenticated = isAuthUser();
-		return (
+	return (
   <>
     <div className='Header'>
-      {open && <Backdrop onClick={this.handleClick} />}
+      {state && <Backdrop onClick={handleClick} />}
       <div className='Header-logo'>
         <Link to='/' className='Header-logo-text'>
           <h1 className='Header-logo_text'>HM</h1>
@@ -50,20 +35,20 @@ class Headers extends Component {
         {isAuthenticated && (
         <div
           className='menu-btn'
-          onClick={this.handleClick}
+          onClick={handleClick}
           role='button'
           tabIndex={0}
-          onKeyDown={this.handleKeyDown}
+          onKeyDown={handleKeyDown}
         >
-          <span className='username-text'>{getUserName()}</span>
+          <span className='username-text'>User</span>
           <img src='' alt='' />
           <i className='fas fa-user' />
           <i className='fas fa-angle-down' />
         </div>
 						)}
 
-        {open ? (
-          <div className={`userprofile-menu ${open && 'fadeIn'}`}>
+        {state ? (
+          <div className={`userprofile-menu ${state && 'fadeIn'}`}>
             <ul className='user-nav-list'>
               <LinkItem
                 nameOfClass='item-link'
@@ -84,7 +69,7 @@ class Headers extends Component {
                 text='Logout'
                 iconsClass='fa-sign-out-alt'
                 to='logout'
-                handleShowHide={this.handleShowHide}
+                handleShowHide={handleShowHide}
                 withIcon
               />
             </ul>
@@ -95,7 +80,7 @@ class Headers extends Component {
   </>
 		);
 	}
-}
+
 
 
 
