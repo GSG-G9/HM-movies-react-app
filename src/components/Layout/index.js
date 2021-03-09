@@ -40,7 +40,8 @@ class Layout extends Component {
 		this.addSortCase = this.addSortCase.bind(this);
 		this.addFilterCase = this.addFilterCase.bind(this);
 		this.handleAuthentication = this.handleAuthentication.bind(this);
-		this.handleLogout = this.handleLogout.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+     this.addSearchText = this.addSearchText.bind(this);
 	}
 
 
@@ -139,6 +140,13 @@ class Layout extends Component {
     this.setState({ movies: [] });
   }
 
+  addSearchText(searchText) {
+    const moviesArr = getMovies();
+    const moviesSearched = moviesArr.filter((item) =>
+      item.title.toLowerCase().includes(searchText.toLowerCase())
+    );
+    this.setState({ movies: moviesSearched });
+  }
 	render() {
 		const { show, movies, isAuthenticated,loading } = this.state;
 		return loading ? (
@@ -208,7 +216,8 @@ class Layout extends Component {
 													handleSubmit: this.handleSubmit,
 													handleDeleteMovie: this.handleDeleteMovie,
 													addSortCase: this.addSortCase,
-													addFilterCase: this.addFilterCase,
+                          addFilterCase: this.addFilterCase,
+                          addSearchText: this.addSearchText,
 												}}
     {...props}
   />
