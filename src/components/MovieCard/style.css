@@ -152,6 +152,11 @@
   align-items: center;
 }
 
+.MovieCard .card-header-style2 .card-footer-style2 .title h2 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
 .MovieCard .card-header-style2 .card-footer-style2 .card-menu {
   width: 10%;
   display: flex;
@@ -184,14 +189,14 @@
 
 .MovieCard .card-header-style2 .card-footer-style2 .card-menu .card-menu_list {
   position: absolute;
-  top: 0;
-  left: 0;
-  border: 0.5px solid rgb(248, 244, 244);
+  top: -48px;
+  left: 22px;
+  border: 1px solid rgb(248, 244, 244);
   border-right: 0px;
   padding: 5px;
   width: 90%;
   height: 100%;
-  background-color: rgb(248, 244, 244);
+  background-color: #ffffff;
   z-index: 2000;
   animation: fadeIn 0.5s;
   animation-fill-mode: forwards;

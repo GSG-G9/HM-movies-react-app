@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 import {
   getMovies,
   saveMovies,
   removeMovie,
   watchedMovies,
-	unRegisterUser,
-	isAuthUser
+  unRegisterUser,
+  isAuthUser,
 } from "../../utils/localStorage";
 import Header from "../Headers";
 import About from "../About";
@@ -67,75 +67,77 @@ class Layout extends Component {
 		this.setState({ isAuthenticated: value });
 	}
 
-	handleDeleteMovie(movieId) {
-		const movies = removeMovie(movieId);
-		this.setState({ movies });
-	}
+  handleDeleteMovie(movieId) {
+    const movies = removeMovie(movieId);
+    this.setState({ movies });
+  }
 
-	handleWatchedMovies(movieId) {
-		const movies = watchedMovies(movieId);
-		this.setState({ movies });
-	}
+  handleWatchedMovies(movieId) {
+    const movies = watchedMovies(movieId);
+    this.setState({ movies });
+  }
 
-	handleSubmit(event) {
-		event.preventDefault();
-		const {
-			target: [
-				{ value: title },
-				{ value: description },
-				{ value: imgUrl },
-				{ values: likes },
-			],
-		} = event;
-		const movies = saveMovies({ title, description, imgUrl, likes });
-		this.setState({ movies });
-	}
+  handleSubmit(event) {
+    event.preventDefault();
+    const {
+      target: [
+        { value: title },
+        { value: description },
+        { value: imgUrl },
+        { values: likes },
+      ],
+    } = event;
+    const movies = saveMovies({ title, description, imgUrl, likes });
+    this.setState({ movies });
+  }
 
-	handleLogout() {
-		const {history:{push}} = this.props
-		unRegisterUser();
-		this.setState({ isAuthenticated: isAuthUser() });
-		return push('/');
-	}
+  handleLogout() {
+    const {
+      history: { push },
+    } = this.props;
+    unRegisterUser();
+    this.setState({ isAuthenticated: isAuthUser() });
+    return push("/");
+  }
 
-	addSortCase(sortBy) {
-		const { movies } = this.state;
-		switch (sortBy) {
-			case 'alphabetical-ascending':
-				this.setState({
-					movies: movies.sort((a, b) => {
-						if (a.title < b.title) {
-							return -1;
-						}
-						if (a.title > b.title) {
-							return 1;
-						}
-						return 0;
-					}),
-				});
-				break;
-			case 'alphabetical-dscending':
-				this.setState({
-					movies: movies.sort((a, b) => {
-						if (a.title < b.title) {
-							return 1;
-						}
-						if (a.title > b.title) {
-							return -1;
-						}
-						return 0;
-					}),
-				});
-				break;
-			default:
-				this.setState({ movies });
-				break;
-		}
-	}
+  addSortCase(sortBy) {
+    const { movies } = this.state;
+    switch (sortBy) {
+      case "alphabetical-ascending":
+        this.setState({
+          movies: movies.sort((a, b) => {
+            if (a.title < b.title) {
+              return -1;
+            }
+            if (a.title > b.title) {
+              return 1;
+            }
+            return 0;
+          }),
+        });
+        break;
+      case "alphabetical-dscending":
+        this.setState({
+          movies: movies.sort((a, b) => {
+            if (a.title < b.title) {
+              return 1;
+            }
+            if (a.title > b.title) {
+              return -1;
+            }
+            return 0;
+          }),
+        });
+        break;
+      default:
+        this.setState({ movies });
+        break;
+    }
+  }
 
-	addFilterCase() {
-		this.setState({ movies: [] });
-	}
+  addFilterCase() {
+    this.setState({ movies: [] });
+  }
 
 	render() {
 		const { show, movies, isAuthenticated,loading } = this.state;
@@ -164,15 +166,15 @@ class Layout extends Component {
               handleAuthentication={this.handleAuthentication}
               {...props}
             />
-							)}
-        />
-        <Route
-          exact
-          path='/signup'
-          render={(props) => (
-            <SignUp
-              handleAuthentication={this.handleAuthentication}
-              {...props}
+            <Route
+              exact
+              path="/login"
+              render={(props) => (
+                <Login
+                  handleAuthentication={this.handleAuthentication}
+                  {...props}
+                />
+              )}
             />
 							)}
         />
@@ -229,8 +231,8 @@ class Layout extends Component {
 }
 
 Layout.propTypes = {
-	history:PropTypes.shape({
-		push:PropTypes.func.isRequired
-	}).isRequired
-}
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 export default withRouter(Layout);
