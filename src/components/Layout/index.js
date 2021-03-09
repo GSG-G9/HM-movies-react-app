@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
-  getMovies,
-  saveMovies,
-  removeMovie,
-  watchedMovies,
-  unRegisterUser,
-  isAuthUser,
-} from "../../utils/localStorage";
+	getMovies,
+	removeMovie,
+	saveMovies,
+	watchedMovies,
+} from '../../utils/firebaseStore';
 import Header from "../Headers";
 import About from "../About";
 import Contact from "../Contact";
@@ -40,45 +38,43 @@ class Layout extends Component {
 		this.addSortCase = this.addSortCase.bind(this);
 		this.addFilterCase = this.addFilterCase.bind(this);
 		this.handleAuthentication = this.handleAuthentication.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-     this.addSearchText = this.addSearchText.bind(this);
+    this.addSearchText = this.addSearchText.bind(this);
 	}
 
 
 
-	componentDidMount() {
-			firebase
-				.auth()
-				.onAuthStateChanged((user) =>
-					user
-						? this.setState({
-								movies: getMovies(),
-								isAuthenticated: true,
-								loading: false,
-						  })
-						: this.setState({
-								movies: getMovies(),
-								isAuthenticated: false,
-								loading: false,
-						  })
-				);
+	async componentDidMount() {
+    const movies = await getMovies()
+			firebase.auth().onAuthStateChanged((user) =>
+				user
+					? this.setState({
+							movies,
+							isAuthenticated: true,
+							loading: false,
+					  })
+					: this.setState({
+							movies,
+							isAuthenticated: false,
+							loading: false,
+					  })
+			);
 	}
 
 	handleAuthentication(value) {
 		this.setState({ isAuthenticated: value });
 	}
 
-  handleDeleteMovie(movieId) {
-    const movies = removeMovie(movieId);
+  async handleDeleteMovie(movieId) {
+    const movies = await removeMovie(movieId);
     this.setState({ movies });
   }
 
-  handleWatchedMovies(movieId) {
-    const movies = watchedMovies(movieId);
+  async handleWatchedMovies(movieId) {
+    const movies = await watchedMovies(movieId);
     this.setState({ movies });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     const {
       target: [
@@ -88,17 +84,8 @@ class Layout extends Component {
         { values: likes },
       ],
     } = event;
-    const movies = saveMovies({ title, description, imgUrl, likes });
+    const movies = await saveMovies({ title, description, imgUrl, likes });
     this.setState({ movies });
-  }
-
-  handleLogout() {
-    const {
-      history: { push },
-    } = this.props;
-    unRegisterUser();
-    this.setState({ isAuthenticated: isAuthUser() });
-    return push("/");
   }
 
   addSortCase(sortBy) {
@@ -147,6 +134,7 @@ class Layout extends Component {
     );
     this.setState({ movies: moviesSearched });
   }
+
 	render() {
 		const { show, movies, isAuthenticated,loading } = this.state;
 		return loading ? (
@@ -162,9 +150,7 @@ class Layout extends Component {
         <Route
           exact
           path='/logout'
-          render={(props) => (
-            <Logout {...props} />
-							)}
+          render={(props) => <Logout {...props} />}
         />
         <Route
           exact
@@ -174,15 +160,15 @@ class Layout extends Component {
               handleAuthentication={this.handleAuthentication}
               {...props}
             />
-            <Route
-              exact
-              path="/login"
-              render={(props) => (
-                <Login
-                  handleAuthentication={this.handleAuthentication}
-                  {...props}
-                />
-              )}
+							)}
+        />
+        <Route
+          exact
+          path='/signup'
+          render={(props) => (
+            <SignUp
+              handleAuthentication={this.handleAuthentication}
+              {...props}
             />
 							)}
         />
@@ -216,8 +202,8 @@ class Layout extends Component {
 													handleSubmit: this.handleSubmit,
 													handleDeleteMovie: this.handleDeleteMovie,
 													addSortCase: this.addSortCase,
-                          addFilterCase: this.addFilterCase,
-                          addSearchText: this.addSearchText,
+													addFilterCase: this.addFilterCase,
+													addSearchText: this.addSearchText,
 												}}
     {...props}
   />

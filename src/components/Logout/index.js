@@ -1,4 +1,3 @@
-
 import { Redirect } from 'react-router-dom';
 
 import {signOut} from '../../utils/firebaseStore';

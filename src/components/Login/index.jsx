@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React, { Component,useContext } from "react";
 import { Link,Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
-import { isAuthUser, registerUser } from '../../utils/localStorage';
-import {isAuthUserFirebase} from '../../utils/firebaseStore'
+import {authContext} from "../Context"
 import firebase from '../../firebase'
 import "./style.css";
 
@@ -41,6 +40,7 @@ class Login extends Component {
       handleAuthentication(true);
 			return push('/movies');
 			}
+			return handleAuthentication(false);
 		})
 
 		return this.setState({ errors: 'Please check you Email and Password ... ' });
@@ -129,7 +129,7 @@ Login.propTypes = {
 };
 
 function HighOrderLogin(props) {
-  const isAuth = isAuthUser();
+	const {isAuth} = useContext(authContext)
 	if (!isAuth) {
 		return <Login {...props} />;
 	}

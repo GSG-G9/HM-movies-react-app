@@ -10,7 +10,7 @@ function LinkItem(props) {
     <>
       <li
         role='button'
-        tab-tabIndex='0'
+        tabIndex='0'
         onKeyDown={() => handleShowHide()}
         className={nameOfClass}
         onClick={handleShowHide}

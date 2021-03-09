@@ -1,5 +1,4 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import axios from 'axios';
 import Layout from "./components/Layout";
 import AuthProvider from './components/Context'
 import "./App.css";

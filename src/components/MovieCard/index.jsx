@@ -152,8 +152,8 @@ MovieCard.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     likes: PropTypes.number.isRequired,
-    watched: PropTypes.number.isRequired,
-    released: PropTypes.string.isRequired,
+    watched: PropTypes.bool.isRequired,
+    released: PropTypes.number.isRequired,
   }).isRequired,
 };
 
