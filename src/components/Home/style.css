@@ -24,6 +24,7 @@
   width: fit-content;
   padding: 2rem;
   background-color: rgb(223, 215, 215,0.5);
+  cursor: pointer;
 }
 
 .home-button-link{
