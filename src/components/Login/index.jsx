@@ -1,9 +1,9 @@
-import React, { Component,useContext } from "react";
-import { Link,Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
-import {authContext} from "../Context"
-import firebase from '../../firebase'
-import "./style.css";
+import React, { Component, useContext } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { authContext } from '../Context';
+import firebase from '../../firebase';
+import './style.css';
 
 class Login extends Component {
 	constructor(props) {
@@ -16,34 +16,36 @@ class Login extends Component {
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handlePassword = this.handlePassword.bind(this);
-    this.handleShowPassword = this.handleShowPassword.bind(this);
-    this.handleEmail = this.handleEmail.bind(this);
+		this.handleShowPassword = this.handleShowPassword.bind(this);
+		this.handleEmail = this.handleEmail.bind(this);
+		this.handleGoogleSingIn = this.handleGoogleSingIn.bind(this);
 	}
 
 	async handleSubmit(event) {
 		event.preventDefault();
 		const {
-      history: { push },
-      handleAuthentication,
+			history: { push },
+			handleAuthentication,
 		} = this.props;
 		const {
 			target: [{ value: email }, { value: password }],
 		} = event;
-			
-	
-		await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-		await firebase.auth().signInWithEmailAndPassword(email,password)
+
+		await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+		await firebase.auth().signInWithEmailAndPassword(email, password);
 
 		firebase.auth().onAuthStateChanged((user) => {
-			if (user){
-			this.setState({ errors: '' });
-      handleAuthentication(true);
-			return push('/movies');
+			if (user) {
+				this.setState({ errors: '' });
+				handleAuthentication(true);
+				return push('/movies');
 			}
 			return handleAuthentication(false);
-		})
+		});
 
-		return this.setState({ errors: 'Please check you Email and Password ... ' });
+		return this.setState({
+			errors: 'Please check you Email and Password ... ',
+		});
 	}
 
 	handleEmail(event) {
@@ -62,6 +64,27 @@ class Login extends Component {
 
 	handleShowPassword() {
 		this.setState((prevState) => ({ showPassword: !prevState.showPassword }));
+	}
+
+	async handleGoogleSingIn() {
+		const {
+			history: { push },
+			handleAuthentication,
+		} = this.props;
+		const provider = new firebase.auth.GoogleAuthProvider();
+		firebase.auth().signInWithPopup(provider);
+		firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				this.setState({ errors: '' });
+				handleAuthentication(true);
+				return push('/movies');
+			}
+			return handleAuthentication(false);
+		});
+
+		return this.setState({
+			errors: 'Logging by Google ... ',
+		});
 	}
 
 	render() {
@@ -103,19 +126,14 @@ class Login extends Component {
       <div className='add-user-input-row-forget-password'>
         <Link to='/'>Forget Password !!</Link>
       </div>
+      <button className='home-login-button home-button-link' type='button' onClick={this.handleGoogleSingIn}>Login By Google</button>
       <p>
         Do You Have an account?...
         {' '}
         <Link to='/signup'>Register Here !!</Link>
       </p>
-      {errors ? (
-        <p className='login-error'>{errors}</p>
-					) : null}
-      <input
-        className='submit-login-button'
-        type='submit'
-        value='Login'
-      />
+      {errors ? <p className='login-error'>{errors}</p> : null}
+      <input className='submit-login-button' type='submit' value='Login' />
     </form>
   </div>
 		);
@@ -129,7 +147,7 @@ Login.propTypes = {
 };
 
 function HighOrderLogin(props) {
-	const {isAuth} = useContext(authContext)
+	const { isAuth } = useContext(authContext);
 	if (!isAuth) {
 		return <Login {...props} />;
 	}
@@ -138,7 +156,7 @@ function HighOrderLogin(props) {
 
 HighOrderLogin.propTypes = {
 	isAuthenticated: PropTypes.bool.isRequired,
-	handleAuthentication:PropTypes.func.isRequired
+	handleAuthentication: PropTypes.func.isRequired,
 };
 
 export default HighOrderLogin;

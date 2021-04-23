@@ -38,8 +38,8 @@ export const saveMovies = async ({
 };
 
 
-export const removeMovie = async (id) => {
-	await fireStore.collection('movies').doc(id).delete()
+export const removeMovie = async () => {
+	// await fireStore.collection('movies').doc(id).delete()
 	const movies = await getMovies()
 	return movies
 };
