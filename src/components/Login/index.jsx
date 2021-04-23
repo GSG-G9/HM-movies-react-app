@@ -81,10 +81,6 @@ class Login extends Component {
 			}
 			return handleAuthentication(false);
 		});
-
-		return this.setState({
-			errors: 'Logging by Google ... ',
-		});
 	}
 
 	render() {
